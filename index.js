@@ -16,7 +16,9 @@ async function run() {
       cwd: path.resolve(__dirname),
       shell: true
     };
-    await executeCommand('npm ci --only=prod', options);
+    // await executeCommand('npm ci --only=prod', options);
+    await executeCommand('npm --loglevel error ci --only=prod', options);
+    
   }
     
     // Install extra plugins if specified

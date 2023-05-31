@@ -9,6 +9,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3      
       
+      - name: Setup Node.js with GitHub Package Registry
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          registry-url: 'https://npm.pkg.github.com'
+          scope: 'y.riahi'
+      
       # semantic release
       - name: Semantic Release
         # uses: yriahi/semantic-release-action@v1
@@ -20,13 +27,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-      
-      - name: Setup Node.js with GitHub Package Registry
-        uses: actions/setup-node@v3
-        with:
-          node-version: 16
-          registry-url: 'https://npm.pkg.github.com'
-          scope: 'y.riahi'
       
       - name: Publish To GitHub Package Registry
         if: steps.semantic.outputs.new_release_published == 'true'

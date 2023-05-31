@@ -20,12 +20,12 @@ async function run() {
   }
     
     // Install extra plugins if specified
-    if (extraPlugins) {
-      const plugins = extraPlugins.split('\n');
-      for (const plugin of plugins) {
-        await exec.exec('npm', ['install', '--save-dev', plugin]);
-      }
-    }
+    // if (extraPlugins) {
+    //   const plugins = extraPlugins.split('\n');
+    //   for (const plugin of plugins) {
+    //     await exec.exec('npm', ['install', '--save-dev', plugin]);
+    //   }
+    // }
 
     // Perform semantic release actions
     {
@@ -49,7 +49,7 @@ async function run() {
 
 const executeCommand = async (command, options) => {
   return new Promise((resolve, reject) => {
-    childProcessExec(command, options, (error, stdout, stderr) => {
+    exec(command, options, (error, stdout, stderr) => {
       if (error) {
         reject(error);
       } else {
@@ -58,6 +58,5 @@ const executeCommand = async (command, options) => {
     });
   });
 };
-
 
 run().catch(console.error);

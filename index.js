@@ -29,12 +29,13 @@ async function run() {
     }
 
     // Perform semantic release actions
-    await exec.exec('npx', ['semantic-release'], {
-      env: {
-        GITHUB_TOKEN: githubToken,
-        NPM_TOKEN: npmToken,
-      },
-    });
+    {
+      const options = {
+        cwd: path.resolve(__dirname),
+        silent: true
+      };
+      await exec.exec('npx', ['semantic-release'], options);
+    }
 
     // Set the outputs
     core.setOutput('new_release_published', 'true');

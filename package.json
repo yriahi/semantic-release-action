@@ -1,9 +1,6 @@
 {
   "name": "semantic-release-action",
   "version": "1.0.0",
-  "release": {
-    "branches": ["master", "main"]
-  },
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -12,6 +9,9 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/yriahi/semantic-release-action.git"
+  },
+  "release": {
+    "branches": ["master", "main"]
   },
   "keywords": [],
   "author": "yriahi <yriahi@gmail.com> (https://github.com/yriahi)",

@@ -8,14 +8,17 @@ async function run() {
     const githubToken = core.getInput('GITHUB_TOKEN');
     const npmToken = core.getInput('NPM_TOKEN');
     
-    const {stdout, stderr} = await exec('npm --loglevel error ci --only=prod', {
-      cwd: path.resolve(__dirname)
-    });
-    console.log(stdout);
-    if (stderr) {
-      return Promise.reject(stderr);
+    // Install Dependencies
+    {
+      const { stdout, stderr } = await exec('npm --loglevel error ci --only=prod', {
+        cwd: path.resolve(__dirname)
+      });
+      console.log(stdout);
+      if (stderr) {
+        return Promise.reject(stderr);
+      }
     }
-
+    
     // Install extra plugins if specified
     if (extraPlugins) {
       const plugins = extraPlugins.split('\n');

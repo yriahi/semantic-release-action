@@ -1,6 +1,9 @@
 {
   "name": "semantic-release-action",
   "version": "1.0.0",
+  "release": {
+    "branches": ["master", "main"]
+  }
   "description": "",
   "main": "index.js",
   "scripts": {

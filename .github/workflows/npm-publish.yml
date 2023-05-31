@@ -5,7 +5,12 @@ jobs:
     runs-on: ubuntu-latest
     name: Semantic release
     steps:
-      - name: Semantic Release
+      # checkout code base
+      - name: Checkout
+        uses: actions/checkout@v3
+      
+        # semantic release
+        - name: Semantic Release
         # uses: yriahi/semantic-release-action@v1
         uses: ./
         with:

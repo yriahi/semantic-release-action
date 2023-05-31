@@ -1,30 +1,27 @@
-
-on: [push]
+name: Semantic Release Workflow
+on:
+  push:
+    branches:
+      - main
 
 jobs:
-  hello_world_job:
+  semantic_release_job:
     runs-on: ubuntu-latest
-    name: Semantic release
+
     steps:
-      # checkout code base
       - name: Checkout
-        uses: actions/checkout@v3      
-      
-      # node
-      - name: Setup Node.js with GitHub Package Registry
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 16
-          registry-url: 'https://npm.pkg.github.com'
-          scope: 'y.riahi'
-      
-      # dependencies
+          node-version: '16'
+
       - name: Install dependencies
-        run: npm install
-      
-      # semantic release
+        run: npm ci
+
       - name: Semantic Release
-        # uses: yriahi/semantic-release-action@v1
+        # uses: username/repo-name@v1
         uses: ./
         with:
           extra_plugins: |
@@ -33,10 +30,3 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-      
-      # # publish
-      # - name: Publish To GitHub Package Registry
-      #   if: steps.semantic.outputs.new_release_published == 'true'
-      #   run: npm publish
-      #   env:
-      #     NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}

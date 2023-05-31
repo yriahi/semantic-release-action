@@ -36,6 +36,7 @@ async function run() {
       await executeCommand('npx semantic-release', options);
     }
 
+
     // Set the outputs
     core.setOutput('new_release_published', 'true');
     // Set other outputs based on the release process
@@ -48,7 +49,7 @@ async function run() {
 
 const executeCommand = async (command, options) => {
   return new Promise((resolve, reject) => {
-    exec(command, options, (error, stdout, stderr) => {
+    childProcessExec(command, options, (error, stdout, stderr) => {
       if (error) {
         reject(error);
       } else {
@@ -59,4 +60,4 @@ const executeCommand = async (command, options) => {
 };
 
 
-run();
+run().catch(console.error);

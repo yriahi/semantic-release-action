@@ -1,5 +1,6 @@
 const core = require('@actions/core');
 const exec = require('@actions/exec');
+const { exec } = require('child_process');
 const path = require('path');
 
 async function run() {
@@ -9,16 +10,14 @@ async function run() {
     const githubToken = core.getInput('GITHUB_TOKEN');
     const npmToken = core.getInput('NPM_TOKEN');
     
-    // Install Dependencies
-    {
-      const { stdout, stderr } = await exec('npm --loglevel error ci --only=prod', {
-        cwd: path.resolve(__dirname)
-      });
-      console.log(stdout);
-      if (stderr) {
-        return Promise.reject(stderr);
-      }
-    }
+   // Install Dependencies
+   {
+    const options = {
+      cwd: path.resolve(__dirname),
+      shell: true
+    };
+    await executeCommand('npm ci --only=prod', options);
+  }
     
     // Install extra plugins if specified
     if (extraPlugins) {
@@ -32,9 +31,9 @@ async function run() {
     {
       const options = {
         cwd: path.resolve(__dirname),
-        silent: true
+        shell: true
       };
-      await exec.exec('npx', ['semantic-release'], options);
+      await executeCommand('npx semantic-release', options);
     }
 
     // Set the outputs
@@ -45,5 +44,19 @@ async function run() {
     core.setFailed(error.message);
   }
 }
+
+
+const executeCommand = async (command, options) => {
+  return new Promise((resolve, reject) => {
+    exec(command, options, (error, stdout, stderr) => {
+      if (error) {
+        reject(error);
+      } else {
+        resolve(stdout);
+      }
+    });
+  });
+};
+
 
 run();

@@ -1,41 +1,106 @@
-on: [push]
+name: Release
+
+on:
+  push:
+    branches:
+      - master
+      - main
+      - next
+      - next-major
+      - alpha
+      - beta
 
 jobs:
-  hello_world_job:
+  release:
+    name: release
     runs-on: ubuntu-latest
-    name: Semantic release
     steps:
-      # checkout code base
       - name: Checkout
-        uses: actions/checkout@v3      
-      
-      - name: Install dependencies
-        run: npm install
-      
+        uses: actions/checkout@v3
+
+      - name: Semantic Release
+        uses: ./
+        id: semantic
+        with:
+          branches: |
+            [
+              '+([0-9])?(.{+([0-9]),x}).x',
+              'master',
+              'main',
+              'next',
+              'next-major',
+              {
+                name: 'beta',
+                prerelease: true
+              },
+              {
+                name: 'alpha',
+                prerelease: true
+              }
+            ]
+          extra_plugins: |
+            @semantic-release/git
+            @semantic-release/changelog
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
       - name: Setup Node.js with GitHub Package Registry
         uses: actions/setup-node@v3
         with:
           node-version: 16
           registry-url: 'https://npm.pkg.github.com'
           scope: 'y.riahi'
-      
-      # semantic release
-      - name: Semantic Release
-        # uses: yriahi/semantic-release-action@v1
-        uses: ./
-        with:
-          extra_plugins: |
-            @semantic-release/changelog@6.0.0
-            @semantic-release/git
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-      
+
       - name: Publish To GitHub Package Registry
         if: steps.semantic.outputs.new_release_published == 'true'
         run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+
+      - name: Push updates to branch for major version
+        if: steps.semantic.outputs.new_release_published == 'true'
+        run: "git push https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git HEAD:refs/heads/v${{steps.semantic.outputs.new_release_major_version}}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+# on: [push]
+
+# jobs:
+#   hello_world_job:
+#     runs-on: ubuntu-latest
+#     name: Semantic release
+#     steps:
+#       # checkout code base
+#       - name: Checkout
+#         uses: actions/checkout@v3      
+      
+#       - name: Install dependencies
+#         run: npm install
+      
+#       - name: Setup Node.js with GitHub Package Registry
+#         uses: actions/setup-node@v3
+#         with:
+#           node-version: 16
+#           registry-url: 'https://npm.pkg.github.com'
+#           scope: 'y.riahi'
+      
+#       # semantic release
+#       - name: Semantic Release
+#         # uses: yriahi/semantic-release-action@v1
+#         uses: ./
+#         with:
+#           extra_plugins: |
+#             @semantic-release/changelog@6.0.0
+#             @semantic-release/git
+#         env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #     NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+      
+      # - name: Publish To GitHub Package Registry
+      #   if: steps.semantic.outputs.new_release_published == 'true'
+      #   run: npm publish
+      #   env:
+      #     NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
 
 

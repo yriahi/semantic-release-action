@@ -30,6 +30,7 @@ jobs:
       - name: Semantic Release
         # uses: username/repo-name@v1
         uses: ./
+        with:
           extra_plugins: |
             @semantic-release/changelog
             @semantic-release/git

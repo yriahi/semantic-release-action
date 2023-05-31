@@ -7,10 +7,10 @@ jobs:
     steps:
       # checkout code base
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v3      
       
-        # semantic release
-        - name: Semantic Release
+      # semantic release
+      - name: Semantic Release
         # uses: yriahi/semantic-release-action@v1
         uses: ./
         with:
@@ -20,4 +20,4 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-    
+      

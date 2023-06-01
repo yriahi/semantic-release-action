@@ -1,7 +1,7 @@
 {
-  "name": "semantic-release-action",
+  "name": "@yriahi/semantic-release-action",
   "version": "1.0.0",
-  "description": "",
+  "description": "GitHub Action for Semantic Release",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -10,10 +10,10 @@
     "type": "git",
     "url": "git+https://github.com/yriahi/semantic-release-action.git"
   },
-  "release": {
-    "branches": ["master", "main"]
-  },
-  "keywords": [],
+  "keywords": [
+    "semantic-release",
+    "action"
+  ],
   "author": "yriahi <yriahi@gmail.com> (https://github.com/yriahi)",
   "license": "MIT",
   "bugs": {

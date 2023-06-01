@@ -14,6 +14,10 @@ jobs:
   semantic_release_job:
     runs-on: ubuntu-latest
 
+    permissions:
+      contents: write
+      packages: write
+
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -22,13 +26,8 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '16'
-      
-      # !! this should not be needed as the index.js will handle the install
-      - name: Install dependencies
-        run: npm ci
 
       - name: Semantic Release
-        # uses: username/repo-name@v1
         uses: ./
         with:
           extra_plugins: |

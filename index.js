@@ -1,6 +1,5 @@
 const core = require('@actions/core');
-// const exec = require('@actions/exec');
-const { exec } = require('child_process');
+const { execSync } = require('child_process');
 const path = require('path');
 
 async function run() {
@@ -10,34 +9,35 @@ async function run() {
     const githubToken = core.getInput('GITHUB_TOKEN');
     const npmToken = core.getInput('NPM_TOKEN');
     
-   // Install Dependencies
-   {
-    const options = {
-      cwd: path.resolve(__dirname),
-      shell: true
-    };
-    // await executeCommand('npm ci --only=prod', options);
-    await executeCommand('npm --loglevel error ci --only=prod', options);
-    
-  }
+    // Install Dependencies
+    {
+      const options = {
+        cwd: path.resolve(__dirname),
+        stdio: 'pipe',
+      };
+      await executeCommand('npm ci --only=prod', options);
+    }
     
     // Install extra plugins if specified
-    // if (extraPlugins) {
-    //   const plugins = extraPlugins.split('\n');
-    //   for (const plugin of plugins) {
-    //     await exec.exec('npm', ['install', '--save-dev', plugin]);
-    //   }
-    // }
+    if (extraPlugins) {
+      const plugins = extraPlugins.split('\n');
+      for (const plugin of plugins) {
+        const options = {
+          cwd: path.resolve(__dirname),
+          stdio: 'pipe',
+        };
+        await executeCommand(`npm install --save-dev ${plugin}`, options);
+      }
+    }
 
     // Perform semantic release actions
     {
       const options = {
         cwd: path.resolve(__dirname),
-        shell: true
+        stdio: 'inherit',
       };
       await executeCommand('npx semantic-release', options);
     }
-
 
     // Set the outputs
     core.setOutput('new_release_published', 'true');
@@ -48,16 +48,14 @@ async function run() {
   }
 }
 
-
 const executeCommand = async (command, options) => {
   return new Promise((resolve, reject) => {
-    exec(command, options, (error, stdout, stderr) => {
-      if (error) {
-        reject(error);
-      } else {
-        resolve(stdout);
-      }
-    });
+    try {
+      execSync(command, options);
+      resolve();
+    } catch (error) {
+      reject(error);
+    }
   });
 };
 

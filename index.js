@@ -1,62 +1,51 @@
 const core = require('@actions/core');
-// const { execSync } = require('child_process');
-const { exec } = require("child_process");
+const { exec } = require('child_process');
 const path = require('path');
 
-async function run() {
+const run = async () => {
   try {
-    // Get inputs from the workflow file
-    const extraPlugins = core.getInput('extra_plugins');
-    const githubToken = core.getInput('GITHUB_TOKEN');
-    const npmToken = core.getInput('NPM_TOKEN');
-    
+    // Check if actions/core is installed
+    if (!actionsCore) {
+      throw new Error('actions/core is not installed');
+    }
+
     // Install Dependencies
-    // {
-    //   const options = {
-    //     cwd: path.resolve(__dirname),
-    //     stdio: 'pipe',
-    //   };
-    //   await executeCommand('npm ci --only=prod', options);
-    // }
-    exec("npm ci --only=prod", (error, stdout, stderr) => {
-      if (error) {
-        console.log(`Error: ${error}`);
-        return;
-      }
-    
-      console.log(`stdout: ${stdout}`);
-      console.log(`stderr: ${stderr}`);
-    });
-    
-    // Install extra plugins if specified
-    // if (extraPlugins) {
-    //   const plugins = extraPlugins.split('\n');
-    //   for (const plugin of plugins) {
-    //     const options = {
-    //       cwd: path.resolve(__dirname),
-    //       stdio: 'pipe',
-    //     };
-    //     await executeCommand(`npm install --save-dev ${plugin}`, options);
-    //   }
-    // }
+    {
+      const options = {
+        cwd: path.resolve(__dirname),
+        shell: true
+      };
+      await executeCommand('npm ci --only=prod', options);
+    }
 
     // Perform semantic release actions
-    // {
-    //   const options = {
-    //     cwd: path.resolve(__dirname),
-    //     stdio: 'inherit',
-    //   };
-    //   await executeCommand('npx semantic-release', options);
-    // }
+    {
+      const options = {
+        cwd: path.resolve(__dirname),
+        shell: true
+      };
+      await executeCommand('npx semantic-release', options);
+    }
 
     // Set the outputs
-    // core.setOutput('new_release_published', 'true');
+    core.setOutput('new_release_published', 'true');
     // Set other outputs based on the release process
 
   } catch (error) {
     core.setFailed(error.message);
   }
-}
+};
 
+const executeCommand = async (command, options) => {
+  return new Promise((resolve, reject) => {
+    exec(command, options, (error, stdout, stderr) => {
+      if (error) {
+        reject(error);
+      } else {
+        resolve(stdout);
+      }
+    });
+  });
+};
 
 run().catch(console.error);

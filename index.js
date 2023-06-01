@@ -2,11 +2,21 @@ const core = require('@actions/core');
 const { exec } = require('child_process');
 const path = require('path');
 
+
+const installActionsCore = async () => {
+  const options = {
+    cwd: path.resolve(__dirname),
+    shell: true
+  };
+  await executeCommand('npm install --save @actions/core', options);
+};
+
+
 const run = async () => {
   try {
-    // Check if actions/core is installed
+    // Install actions/core if it is not installed
     if (!actionsCore) {
-      throw new Error('actions/core is not installed');
+      await installActionsCore();
     }
 
     // Install Dependencies

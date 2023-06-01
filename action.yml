@@ -2,7 +2,7 @@ name: 'GitHub Action for Semantic Release'
 description: 'GitHub Action for Semantic Release'
 author: 'yriahi'
 branding:
-  icon: 'package'
+  icon: 'box'
   color: 'orange'
 inputs:
   semantic_version:

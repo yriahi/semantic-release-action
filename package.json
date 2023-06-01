@@ -1,5 +1,8 @@
 {
   "name": "@yriahi/semantic-release-action",
+  "publishConfig": {
+    "access": "public"
+  },
   "version": "1.0.0",
   "description": "GitHub Action for Semantic Release",
   "main": "index.js",

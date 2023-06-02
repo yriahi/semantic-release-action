@@ -2,6 +2,9 @@
   "name": "@yriahi/semantic-release-action",
   "version": "1.0.0",
   "description": "GitHub Action for Semantic Release",
+  "publishConfig": {
+    "access": "public"
+  },
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
